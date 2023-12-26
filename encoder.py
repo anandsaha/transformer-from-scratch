@@ -4,14 +4,14 @@ from torch import Tensor
 from model import FeedForwardBlock, MultiHeadAttentionBlock, ResidualConnection
 
 
-class EncoderLayer(nn.Module):
+class EncoderBlock(nn.Module):
     def __init__(
         self,
         self_attention_block: MultiHeadAttentionBlock,
         feed_forward_block: FeedForwardBlock,
         dropout: float,
     ) -> None:
-        super(EncoderLayer, self).__init__()
+        super(EncoderBlock, self).__init__()
         self.self_attention_block = self_attention_block
         self.feed_forward_block = feed_forward_block
         self.residual_connection_1 = ResidualConnection(dropout)
@@ -26,7 +26,7 @@ class EncoderLayer(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, encoder_layer: EncoderLayer, num_layers: int) -> None:
+    def __init__(self, encoder_layer: EncoderBlock, num_layers: int) -> None:
         super(Encoder, self).__init__()
         self.encoder_layers = nn.ModuleList([encoder_layer] * num_layers)
 
