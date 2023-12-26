@@ -1,22 +1,22 @@
 from torch import Tensor, nn
-
-import decoder
-import encoder
 import model
 
 
 class Transformer(nn.Module):
     def __init__(
         self,
-        the_encoder: encoder.Encoder,
-        the_decoder: decoder.Decoder,
-        projection: decoder.ProjectionLayer,
+        the_encoder: model.Encoder,
+        the_decoder: model.Decoder,
+        projection: model.ProjectionLayer,
         src_embed: model.InputEmbeddings,
         tgt_embed: model.InputEmbeddings,
         src_pos: model.PositionalEncoding,
         tgt_pos: model.PositionalEncoding,
-        projection_layer: decoder.ProjectionLayer,
+        projection_layer: model.ProjectionLayer,
     ) -> None:
+        
+        super(Transformer, self).__init__()
+
         self.encoder = the_encoder
         self.decoder = the_decoder
         self.projection = projection
@@ -68,7 +68,7 @@ def build_transformer(
             d_model, num_heads, dropout
         )
         feed_forward_block = model.FeedForwardBlock(d_model, d_ff, dropout)
-        encoder_block = encoder.EncoderBlock(
+        encoder_block = model.EncoderBlock(
             encoder_self_attention_block, feed_forward_block, dropout
         )
         encoder_blocks.append(encoder_block)
@@ -83,7 +83,7 @@ def build_transformer(
             d_model, num_heads, dropout
         )
         feed_forward_block = model.FeedForwardBlock(d_model, d_ff, dropout)
-        decoder_block = decoder.DecoderBlock(
+        decoder_block = model.DecoderBlock(
             decoder_self_attention_block,
             decoder_cross_attention_block,
             feed_forward_block,
@@ -92,5 +92,17 @@ def build_transformer(
         decoder_blocks.append(decoder_block)
 
     # Create the encoder and decoder
-    the_encoder = encoder.Encoder(nn.ModuleList(encoder_blocks))
-    the_decoder = decoder.Decoder(nn.ModuleList(decoder_blocks))
+    the_encoder = model.Encoder(nn.ModuleList(encoder_blocks))
+    the_decoder = model.Decoder(nn.ModuleList(decoder_blocks))
+
+    # Create the projection layer
+    projection_layer = model.ProjectionLayer(d_model, tgt_vocab_size)
+
+    transformer = Transformer(the_encoder,
+                              the_decoder,
+                              projection_layer,
+                              src_embed,
+                              tgt_embed,
+                              src_pos,
+                              tgt_pos,
+                              projection_layer)
