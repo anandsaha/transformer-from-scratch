@@ -106,3 +106,9 @@ def build_transformer(
                               src_pos,
                               tgt_pos,
                               projection_layer)
+    
+    for p in transformer.parameters():
+        if p.dim() > 1:
+            nn.init.xavier_uniform_(p)
+
+    return transformer
