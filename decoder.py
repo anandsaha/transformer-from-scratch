@@ -41,9 +41,9 @@ class DecoderBlock(nn.Module):
 
 
 class Decoder(nn.Module):
-    def __init__(self, decoder_block: DecoderBlock, num_layers: int) -> None:
+    def __init__(self, decoder_block: nn.ModuleList) -> None:
         super(Decoder, self).__init__()
-        self.decoder_blocks = nn.ModuleList([decoder_block] * num_layers)
+        self.decoder_blocks = decoder_block
 
     def forward(
         self,
@@ -55,3 +55,13 @@ class Decoder(nn.Module):
         for decoder_block in self.decoder_blocks:
             x = decoder_block(x, encoder_block_output, src_mask, target_mask)
         return x
+
+
+class ProjectionLayer(nn.Module):
+    def __init__(self, d_model: int, vocab_size: int) -> None:
+        super(ProjectionLayer, self).__init__()
+        self.linear = nn.Linear(d_model, vocab_size)
+
+    def forward(self, x: Tensor) -> Tensor:
+        # (batch, seq_length, d_model) -> (batch, seq_length, vocab_size)
+        return self.linear(x)

@@ -27,17 +27,14 @@ class PositionalEncoding(nn.Module):
 
         # shape (seq_length, d_model)
         pe = torch.zeros(seq_length, d_model)
-        print("(PositionalEncoding) Shape of pe is", pe.shape)
 
         # shape (seq_length, 1)
         position = torch.arange(0, seq_length, dtype=torch.float).unsqueeze(1)
-        print("(PositionalEncoding) Shape of position is", position.shape)
 
         # shape (1, d_model / 2)
         denominator = torch.exp(
             torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
         )
-        print("(PositionalEncoding) Shape of denominator is", denominator.shape)
 
         # Apply sin() to even positions
         pe[:, 0::2] = torch.sin(position * denominator)
@@ -84,9 +81,7 @@ class FeedForwardBlock(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # Input dim (batch, seq_length, d_model)
-        print("(FeedForwardBlock before) Shape of x is", x.shape)
         x = self.linear_2(self.dropout(self.relu(self.linear_1(x))))
-        print(" (FeedForwardBlock after) Shape of x is", x.shape)
         return x
 
 

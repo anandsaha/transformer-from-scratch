@@ -26,9 +26,9 @@ class EncoderBlock(nn.Module):
 
 
 class Encoder(nn.Module):
-    def __init__(self, encoder_layer: EncoderBlock, num_layers: int) -> None:
+    def __init__(self, encoder_layers: nn.ModuleList) -> None:
         super(Encoder, self).__init__()
-        self.encoder_layers = nn.ModuleList([encoder_layer] * num_layers)
+        self.encoder_layers = encoder_layers
 
     def forward(self, x: Tensor, src_mask: Tensor = None) -> Tensor:
         for encoder_layer in self.encoder_layers:
