@@ -166,35 +166,3 @@ class ResidualConnection(nn.Module):
     def forward(self, x: Tensor, sublayer: nn.Module) -> Tensor:
         # (batch, seq_length, d_model) -> (batch, seq_length, d_model)
         return x + self.dropout(sublayer(self.layer_norm(x)))
-
-
-class EncoderLayer(nn.Module):
-    def __init__(
-        self,
-        self_attention_block: MultiHeadAttentionBlock,
-        feed_forward_block: FeedForwardBlock,
-        dropout: float,
-    ) -> None:
-        super(EncoderLayer, self).__init__()
-        self.self_attention_block = self_attention_block
-        self.feed_forward_block = feed_forward_block
-        self.residual_connection_1 = ResidualConnection(dropout)
-        self.residual_connection_2 = ResidualConnection(dropout)
-
-    def forward(self, x: Tensor, src_mask: Tensor = None):
-        x = self.residual_connection_1(
-            x, lambda x: self.self_attention_block(x, x, x, src_mask)
-        )
-        x = self.residual_connection_2(x, self.feed_forward_block)
-        return x
-
-
-class Encoder(nn.Module):
-    def __init__(self, encoder_layer: EncoderLayer, num_layers: int) -> None:
-        super(Encoder, self).__init__()
-        self.encoder_layers = nn.ModuleList([encoder_layer] * num_layers)
-
-    def forward(self, x: Tensor, src_mask: Tensor = None) -> Tensor:
-        for encoder_layer in self.encoder_layers:
-            x = encoder_layer(x, src_mask)
-        return x

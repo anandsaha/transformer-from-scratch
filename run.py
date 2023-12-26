@@ -1,5 +1,6 @@
 import torch
 
+import encoder
 import model
 
 d_model = 512
@@ -22,10 +23,10 @@ ff = model.FeedForwardBlock(d_model, 2048, 0.1)
 ff.forward(test_tensor)
 
 print("Testing Encoder", "=" * 20)
-el = model.EncoderLayer(
+el = encoder.EncoderLayer(
     model.MultiHeadAttentionBlock(d_model, num_heads),
     model.FeedForwardBlock(d_model, d_model // num_heads),
     0.1,
 )
-e = model.Encoder(el, 10)
+e = encoder.Encoder(el, 10)
 e.forward(test_tensor)
