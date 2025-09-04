@@ -2,5 +2,16 @@ pandas
 numpy
 jupyter
 matplotlib
-torch --index-url https://download.pytorch.org/whl/cu129
-torchvision --index-url https://download.pytorch.org/whl/cu129
+torchviz
+datasets
+tokenizers
+torchmetrics
+--index-url https://download.pytorch.org/whl/cu118
+torch==2.4.1
+torchvision==0.19.1
+torchaudio==2.4.1
+tensorboard
+
+
+
+    
